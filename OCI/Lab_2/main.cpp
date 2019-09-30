@@ -3,38 +3,42 @@
 
 using namespace std;
 
-template <typename T> vector<T> Conv(vector<T> &A, vector<T> &B);
-template <typename T> void Reverse(vector<T> &A);
-template <typename T> void Pars(vector<T> &A);
+vector<float> Conv(vector<float> &A, vector<float> &B);
+void Reverse(vector<float> &A);
+void Pars(vector<float> &A);
 
-void ShowArr(int* A, int size);
-void ShowArr(vector<int> &A);
+template <typename T>
+void ShowArr(T* A, int size);
+template <typename T>
+void ShowArr(vector<T> &A);
 
-
-template <typename T> vector<T> Scaling(vector<T> A, vector<T> B);
-template <typename T> vector<T> Revers(vector<T> A, vector<T> B);
-template <typename T> vector<int> Time_shift(vector<T> A, vector<T> B);
-template <typename T> vector<int> Expansion(vector<T> A, vector<T> B);
+vector<float> Scaling(vector<float> A, vector<float> B);
+vector<float> Revers(vector<float> A, vector<float> B);
+vector<float> Time_shift(vector<float> A, vector<float> B);
+vector<float> Expansion(vector<float> A, vector<float> B);
 
 int main()
 {
     vector<float> A, B = {};
     cout << "A[] = ";
-    Pars<float> (A);
+    Pars(A);
     cout << "B[] = ";
     Pars(B);
 
-
+    ShowArr(A);
+    ShowArr(B);
 }
 
-void ShowArr(vector<int> &A)
+template <typename T>
+void ShowArr(vector<T> &A)
 {
     for(unsigned long long i = 0; i < A.size(); i++){
         cout << i << " " << A[i] << endl;
     }
     cout << endl;
 }
-void ShowArr(int* A, int size)
+template <typename T>
+void ShowArr(T* A, int size)
 {
     for(int i = 0; i < size; i++){
         cout << i << " " << A[i] << endl;
@@ -42,15 +46,16 @@ void ShowArr(int* A, int size)
     cout << endl;
 }
 
-template <typename T>
-void Pars(vector<int> &A)
+void Pars(vector<float> &A)
 {
     string arrs;
     getline(cin, arrs);
 
     int tempI = 0;
-    for (unsigned long long i = 0; i < arrs.size(); i++){
-        if (arrs[i] != ' ') {
+    float tempD = 0, tempRoz = 1;
+    bool flag1 = 0;
+    for (unsigned long long i = 0; i < arrs.size(); i++){       // 1 0 1.1 1.01 0.1
+        if (arrs[i] != ' ' && arrs[i] != '.' && !flag1) {
             switch (arrs[i]) {
             case '1': {tempI = tempI * 10 + 1; break;}
             case '2': {tempI = tempI * 10 + 2; break;}
@@ -63,18 +68,37 @@ void Pars(vector<int> &A)
             case '9': {tempI = tempI * 10 + 9; break;}
             case '0': {tempI = tempI * 10 + 0; break;}
             }
+        } else if (arrs[i] == '.'){
+            flag1 = 1;
+        } else if (flag1 && (arrs[i] >= '0' && arrs[i] <= '9')) {
+            tempRoz *= 0.1;
+            switch (arrs[i]) {
+            case '1': {tempD += 1*tempRoz; break;}
+            case '2': {tempD += 2*tempRoz; break;}
+            case '3': {tempD += 3*tempRoz; break;}
+            case '4': {tempD += 4*tempRoz; break;}
+            case '5': {tempD += 5*tempRoz; break;}
+            case '6': {tempD += 6*tempRoz; break;}
+            case '7': {tempD += 7*tempRoz; break;}
+            case '8': {tempD += 8*tempRoz; break;}
+            case '9': {tempD += 9*tempRoz; break;}
+            case '0': {tempD += 0*tempRoz; break;}
+            }
         } else {
-            A.push_back(tempI);
+            A.push_back((float)(tempI) + tempD);
             tempI = 0;
+            tempD = 0;
+            tempRoz = 1;
+            flag1 = 0;
         }
     }
-    A.push_back(tempI);
+    A.push_back((float)(tempI) + tempD);
 }
 
-template <typename T>
-void Reverse(vector<int> &A)
+
+void Reverse(vector<float> &A)
 {
-    vector<int> tempA;
+    vector<float> tempA;
     tempA.resize(A.size());
     for (unsigned long long i = 0; i < A.size(); i++)
     {
@@ -83,13 +107,12 @@ void Reverse(vector<int> &A)
     A = tempA;
 }
 
-template <typename T>
-vector<T> Conv(vector<T>& A, vector<T>& B)
+vector<float> Conv(vector<float>& A, vector<float>& B)
 {
-    vector<int> F;
+    vector<float> F;
     unsigned long long n = B.size() + A.size() - 1;
-    int* At = new int[n];
-    int* Bt = new int[n];
+    float* At = new float[n];
+    float* Bt = new float[n];
 
     // Занулюємо масиви
     for (unsigned long long i = 0; i < n; i ++)
@@ -105,7 +128,7 @@ vector<T> Conv(vector<T>& A, vector<T>& B)
     for (unsigned long long i = 0; i < B.size(); i++)
         Bt[i] = B[i];
 
-    int tempData = 0;
+    float tempData = 0;
     for (unsigned long long i = 0; i < n; i++) {
         for (unsigned long long j = 0; j < n; j++)
             tempData += At[j]*Bt[j];
@@ -123,20 +146,20 @@ vector<T> Conv(vector<T>& A, vector<T>& B)
 
 vector<float> Scaling(vector<float> A, float a)
 {
-
+    return A;
 }
 
 vector<int> Revers(vector<int> A, vector<int> B)
 {
-
+    return A;
 }
 
 vector<int> Time_shift(vector<int> A, vector<int> B)
 {
-
+    return A;
 }
 
 vector<int> Expansion(vector<int> A, vector<int> B)
 {
-
+    return A;
 }
