@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector<float> Conv(vector<float> &A, vector<float> &B);
+vector<float> Conv(vector<float> &A, vector<float> &B, bool hint = 0);
 void Reverse(vector<float> &A);
 void Pars(vector<float> &A);
 
@@ -25,8 +25,10 @@ int main()
     cout << "B[] = ";
     Pars(B);
 
+    vector<float> C = Conv(A, B, 1);
     ShowArr(A);
     ShowArr(B);
+    ShowArr(C);
 }
 
 template <typename T>
@@ -54,7 +56,7 @@ void Pars(vector<float> &A)
     int tempI = 0;
     float tempD = 0, tempRoz = 1;
     bool flag1 = 0;
-    for (unsigned long long i = 0; i < arrs.size(); i++){       // 1 0 1.1 1.01 0.1
+    for (unsigned long long i = 0; i < arrs.size(); i++){
         if (arrs[i] != ' ' && arrs[i] != '.' && !flag1) {
             switch (arrs[i]) {
             case '1': {tempI = tempI * 10 + 1; break;}
@@ -107,7 +109,7 @@ void Reverse(vector<float> &A)
     A = tempA;
 }
 
-vector<float> Conv(vector<float>& A, vector<float>& B)
+vector<float> Conv(vector<float>& A, vector<float>& B, bool hint)
 {
     vector<float> F;
     unsigned long long n = B.size() + A.size() - 1;
@@ -134,6 +136,12 @@ vector<float> Conv(vector<float>& A, vector<float>& B)
             tempData += At[j]*Bt[j];
 
         F.push_back(tempData);
+        if (hint) {
+            cout << "\n___\n";
+            ShowArr(At, n);
+            ShowArr(Bt, n);
+            cout << "  *= " << tempData << endl;
+        }
         tempData = 0;
 
         for (unsigned long long k = 0; k < n - 1; k++)
