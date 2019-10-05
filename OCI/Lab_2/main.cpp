@@ -4,45 +4,72 @@
 using namespace std;
 
 vector<float> Conv(vector<float> &A, vector<float> &B, bool hint = 0);
-void Reverse(vector<float> &A);
 void Pars(vector<float> &A);
 
-template <typename T>
-void ShowArr(T* A, int size);
-template <typename T>
-void ShowArr(vector<T> &A);
+template <typename T> void ShowArr(T* A, int size);
+template <typename T> void ShowArr(vector<T> &A, int type = 0);
 
-vector<float> Scaling(vector<float> A, vector<float> B);
-vector<float> Revers(vector<float> A, vector<float> B);
-vector<float> Time_shift(vector<float> A, vector<float> B);
-vector<float> Expansion(vector<float> A, vector<float> B);
+
+vector<float> Scaling(vector<float> A, float a);
+vector<float> Reverse(vector<float> A);
+vector<float> Time_shift(vector<float> A, float N);
+vector<float> Expansion(vector<float> A, int a);
 
 int main()
 {
     vector<float> A, B = {};
     cout << "A[] = ";
     Pars(A);
-    cout << "B[] = ";
-    Pars(B);
+//    cout << "B[] = ";
+//    Pars(B);
 
-    vector<float> C = Conv(A, B, 1);
-    ShowArr(A);
-    ShowArr(B);
-    ShowArr(C);
+//    vector<float> C = Conv(A, B, true);
+//    ShowArr(A);
+//    ShowArr(B);
+//    ShowArr(C);
+
+    vector<float> aScale = Scaling(A, 2);
+    vector<float> aReverse = Reverse(A);
+    vector<float> aShifted = Time_shift(A, 2);
+    vector<float> aExp = Expansion(A, 2);
+
+    cout << "A and A scaled +2:\n";
+    ShowArr(A,1);
+    ShowArr(aScale,1);
+
+    cout << "\nA and A reversed:\n";
+    ShowArr(A,1);
+    ShowArr(aReverse,1);
+
+    cout << "\nA and A shifted +2:\n";
+    ShowArr(A,1);
+    ShowArr(aShifted,1);
+
+    cout << "\nA and A expansed +2:\n";
+    ShowArr(A,1);
+    ShowArr(aExp,1);
+
+
 }
 
-template <typename T>
-void ShowArr(vector<T> &A)
+template <typename T> void ShowArr(vector<T> &A, int type)
 {
-    for(unsigned long long i = 0; i < A.size(); i++){
-        cout << i << " " << A[i] << endl;
+    if (type == 0) {
+        for(unsigned long long i = 0; i < A.size(); i++){
+            cout << i << " " << A[i] << endl;
+        }
+        cout << endl;
     }
-    cout << endl;
+    if (type == 1) {
+        for(unsigned long long i = 0; i < A.size(); i++){
+            cout << A[i] << "  ";
+        }
+        cout << endl;
+    }
 }
-template <typename T>
-void ShowArr(T* A, int size)
+template <typename T> void ShowArr(T* A, unsigned long long size)
 {
-    for(int i = 0; i < size; i++){
+    for(unsigned long long i = 0; i < size; i++){
         cout << i << " " << A[i] << endl;
     }
     cout << endl;
@@ -73,7 +100,7 @@ void Pars(vector<float> &A)
         } else if (arrs[i] == '.'){
             flag1 = 1;
         } else if (flag1 && (arrs[i] >= '0' && arrs[i] <= '9')) {
-            tempRoz *= 0.1;
+            tempRoz *= static_cast<float>(0.1);
             switch (arrs[i]) {
             case '1': {tempD += 1*tempRoz; break;}
             case '2': {tempD += 2*tempRoz; break;}
@@ -87,26 +114,14 @@ void Pars(vector<float> &A)
             case '0': {tempD += 0*tempRoz; break;}
             }
         } else {
-            A.push_back((float)(tempI) + tempD);
+            A.push_back(tempD + tempI);
             tempI = 0;
             tempD = 0;
             tempRoz = 1;
             flag1 = 0;
         }
     }
-    A.push_back((float)(tempI) + tempD);
-}
-
-
-void Reverse(vector<float> &A)
-{
-    vector<float> tempA;
-    tempA.resize(A.size());
-    for (unsigned long long i = 0; i < A.size(); i++)
-    {
-        tempA[i] = A[A.size() - i - 1];
-    }
-    A = tempA;
+    A.push_back(tempD + tempI);
 }
 
 vector<float> Conv(vector<float>& A, vector<float>& B, bool hint)
@@ -126,7 +141,7 @@ vector<float> Conv(vector<float>& A, vector<float>& B, bool hint)
     // Розставляємо масиви в правильних порядках
     for (unsigned long long i = 0; i < A.size(); i++)
         At[n - (A.size() - i)] = A[i];
-    Reverse(B);
+    B = Reverse(B);
     for (unsigned long long i = 0; i < B.size(); i++)
         Bt[i] = B[i];
 
@@ -154,20 +169,54 @@ vector<float> Conv(vector<float>& A, vector<float>& B, bool hint)
 
 vector<float> Scaling(vector<float> A, float a)
 {
-    return A;
+    vector<float> X = {};
+
+    for(unsigned long long i = 0; i < A.size(); i++)
+    {
+        X.push_back(A[i]*a);
+    }
+    return X;
 }
 
-vector<int> Revers(vector<int> A, vector<int> B)
+vector<float> Reverse(vector<float> A)
 {
-    return A;
+    vector<float> X;
+    X.resize(A.size());
+    for (unsigned long long i = 0; i < A.size(); i++)
+    {
+        X[i] = A[A.size() - i - 1];
+    }
+    return X;
 }
 
-vector<int> Time_shift(vector<int> A, vector<int> B)
+vector<float> Time_shift(vector<float> A, float N )
 {
-    return A;
+    vector<float> X = A;
+    float temp = 0;
+    if (N > 0) {
+        for (unsigned long long i = 0; i < N; i++){
+            temp = X[0];
+            for (unsigned long long j = 0; j < X.size() - 1; j++)
+                X[j] = X[j + 1];
+            X[X.size() - 1] = temp;
+        }
+    } else if (N < 0) {
+          temp = X[X.size() - 1];
+          for (unsigned long long j = X.size() - 1; j > 1; j++)
+              X[j] = X[j - 1];
+          X[0] = temp;
+    }
+
+    return X;
 }
 
-vector<int> Expansion(vector<int> A, vector<int> B)
+vector<float> Expansion(vector<float> A, int a)
 {
-    return A;
+    vector<float> X;
+
+    for (unsigned long long i = 0; i < A.size(); i += a){
+        X.push_back(A[i]);
+    }
+
+    return X;
 }
