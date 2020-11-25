@@ -1,0 +1,7 @@
+build*/
+
+Lab*/*
+!Lab*/main.c
+!Lab*/Lab*/
+Lab*/Lab*/*
+!Lab*/Lab*/*.c
